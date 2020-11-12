@@ -1,0 +1,30 @@
+{
+  "name": "rexsyncserver",
+  "version": "1.0.0",
+  "description": "Syncs videos across clients",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LBBStudios/RexSyncServer.git"
+  },
+  "keywords": [
+    "heroku",
+    "rex",
+    "sync",
+    "video"
+  ],
+  "author": "Gie Vanommeslaeghe",
+  "license": "LGPL-2.1",
+  "bugs": {
+    "url": "https://github.com/LBBStudios/RexSyncServer/issues"
+  },
+  "homepage": "https://github.com/LBBStudios/RexSyncServer#readme",
+  "dependencies": {},
+  "engines":{
+    "node": "10.19.0"
+  }
+}
