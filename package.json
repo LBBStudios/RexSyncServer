@@ -23,8 +23,10 @@
     "url": "https://github.com/LBBStudios/RexSyncServer/issues"
   },
   "homepage": "https://github.com/LBBStudios/RexSyncServer#readme",
-  "dependencies": {},
-  "engines":{
+  "dependencies": {
+    "websocket": "^1.0.32"
+  },
+  "engines": {
     "node": "10.19.0"
   }
 }
