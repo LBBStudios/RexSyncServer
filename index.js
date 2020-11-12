@@ -21,7 +21,6 @@ wsServer.on('request', function(request) {
     });
 
     connection.on('close', function(reasonCode, desc) {
-        console.log("Client has disconnected for reason: " + reasonCode);
-        console.log("\t" + desc);
+        console.log("Client has disconnected for reason: " + reasonCode + " (" + desc + ")");
     });
 });
