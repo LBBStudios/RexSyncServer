@@ -4,8 +4,7 @@
   "description": "Syncs videos across clients",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "./node_modules/.bin/forever index.js"
   },
   "repository": {
     "type": "git",

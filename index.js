@@ -11,6 +11,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 //Set some app settings:
+app.disable('x-powered-by');
 app.enable('strict routing');
 app.enable('trust proxy');
 
@@ -29,14 +30,14 @@ var users = {};
 
 //Function to generate a new userID
 function generateUserID() {
-  return 'user' + random();
+  return "User" + Math.random();
 }
 
 //================================================== WEB HEALTH CHECKS ==================================================
 
 app.get('/', function(req, res) {
   res.setHeader('Content-Type', 'text/plain');
-  res.send("++Rex Sync Server Active++");
+  res.send('++Rex Sync Server Active++');
 });
 
 app.get('/roomcount', function(req, res) {
@@ -47,6 +48,11 @@ app.get('/roomcount', function(req, res) {
 app.get('/usercount', function(req, res) {
   res.setHeader('Content-Type', 'text/plain');
   res.send("Users online: " + String(Object.keys(users).length));
+});
+
+app.get('/metrics', function(req, res) {
+  res.setHeader('Content-Type', 'text/plain');
+  res.send('++Rex Sync Server Metrics++\n' + "Rooms active: " + String(Object.keys(rooms).length) + "\nUsers online: " + String(Object.keys(users).length));
 });
 
 //================================================== MAIN SERVER LOOP ==================================================
@@ -64,4 +70,9 @@ io.on('connection', function(socket) {
   console.log("User " + userID + " has connected to RexSync.");
 
   //TODO: Handle message from the client here and send appropriate responses.
+});
+
+//Actually start the server:
+var server = http.listen(process.env.PORT || 3000, function() {
+  console.log('RexSync listening on port %d.', server.address().port);
 });
