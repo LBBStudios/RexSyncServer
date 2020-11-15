@@ -25,6 +25,7 @@ app.use(function(req, res, next) {
 //To keep track of users/rooms:
 var rooms = {};
 var users = {};
+var version = "RexSyncServer - v0.4";
 
 //================================================== UTILITY FUNCTIONS ==================================================
 
@@ -47,7 +48,7 @@ function generateUserID() {
 
 app.get('/', function(req, res) {
   res.setHeader('Content-Type', 'text/plain');
-  res.send('++Rex Sync Server Active++');
+  res.send('++Rex Sync Server Active++\nVersion: ' + version);
 });
 
 app.get('/roomcount', function(req, res) {
@@ -62,7 +63,11 @@ app.get('/usercount', function(req, res) {
 
 app.get('/metrics', function(req, res) {
   res.setHeader('Content-Type', 'text/plain');
-  res.send('++Rex Sync Server Metrics++\n' + "Rooms active: " + String(Object.keys(rooms).length) + "\nUsers online: " + String(Object.keys(users).length));
+  res.send('++Rex Sync Server Metrics++\n' + 
+            "Rooms active: " + String(Object.keys(rooms).length) +
+            "\nUsers online: " + String(Object.keys(users).length) + 
+            "\nVersion:" + version
+            );
 });
 
 //================================================== MAIN SERVER LOOP ==================================================
