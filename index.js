@@ -2,27 +2,21 @@
 //Version: 1.0
 //License (LGPL-2.1) + repo: https://github.com/LBBStudios/RexSyncServer
 
-'use strict';
-
-const express = require('express');
-const { Server } = require('ws');
-
-const PORT = process.env.PORT || 3000;
-const INDEX = '/appPage.html';
-
-const server = express()
-  .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
-  .listen(PORT, () => console.log(`Listening on ${PORT}`));
-
-const wss = new Server({ server });
-
-wss.on('connection', (ws) => {
-  console.log('Client connected');
-  ws.on('close', () => console.log('Client disconnected'));
+// Node.js WebSocket server script
+const http = require('http');
+const WebSocketServer = require('websocket').server;
+const server = http.createServer();
+server.listen(process.env.PORT || 9898);
+const wsServer = new WebSocketServer({
+    httpServer: server
 });
-
-setInterval(() => {
-  wss.clients.forEach((client) => {
-    client.send(new Date().toTimeString());
-  });
-}, 1000);
+wsServer.on('request', function(request) {
+    const connection = request.accept(null, request.origin);
+    connection.on('message', function(message) {
+      console.log('Received Message:', message.utf8Data);
+      connection.sendUTF('Hi this is WebSocket server!');
+    });
+    connection.on('close', function(reasonCode, description) {
+        console.log('Client has disconnected.');
+    });
+});
