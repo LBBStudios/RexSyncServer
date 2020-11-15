@@ -4,14 +4,21 @@
   <title>WebSocket Playground</title>
 </head>
 <body>
+    <p id="server-time"></p>
 </body>
 <script>
-const ws = new WebSocket('ws://rexsync.herokuapp.com:9898/');
-ws.onopen = function() {
-    console.log('WebSocket Client Connected');
-    ws.send('Hi this is web client.');
-};
-ws.onmessage = function(e) {
-  console.log("Received: '" + e.data + "'");
-};
+var socket = io('http://rexsync.herokuapp.com');
+
+socket.on('connection', (socket) => {
+    console.log('a user connected');
+
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
+});
+
+socket.on('time', (timeString) => {
+    el = document.getElementById('server-time');
+    el.innerHTML = 'Server time: ' + timeString;
+});
 </script>

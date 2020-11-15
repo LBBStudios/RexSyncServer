@@ -66,7 +66,7 @@ app.get('/metrics', function(req, res) {
   res.send('++Rex Sync Server Metrics++\n' + 
             "Rooms active: " + String(Object.keys(rooms).length) +
             "\nUsers online: " + String(Object.keys(users).length) + 
-            "\nVersion:" + version
+            "\nVersion: " + version
             );
 });
 
@@ -91,3 +91,5 @@ io.on('connection', function(socket) {
 var server = http.listen(process.env.PORT || 3000, function() {
   console.log('RexSync listening on port %d.', server.address().port);
 });
+
+setInterval(() => io.emit('time', new Date().toTimeString()), 1000);
