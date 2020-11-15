@@ -28,7 +28,11 @@
     "express": "^4.17.1",
     "utf-8-validate": "^5.0.3",
     "websocket": "^1.0.32",
-    "ws": "^7.4.0"
+    "ws": "^7.4.0",
+    "forever": "^0.15.1",
+    "lodash": "^3.10.1",
+    "morgan": "^1.6.1",
+    "socket.io": "^1.4.3"
   },
   "engines": {
     "node": "10.19.0"
