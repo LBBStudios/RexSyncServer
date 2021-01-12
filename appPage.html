@@ -1,25 +1,118 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>WebSocket Playground</title>
+  <title>Rex Video Sync Test</title>
   <script src="./socket.io.min.js"></script>
 </head>
 <body>
-    <p id="server-time"></p>
+    <h1>Sync video test</h1>
+
+    <p id="server-time">serverTime</p>
+    <p id="userID">userID</p>
+    <p id="currentTime">timestamp</p>
+    <p id="state">video state</p>
+    <p id="isHost">are we the host?</p>
+
+    <video id="video" src="https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4" controls>
+    </video>
 </body>
 <script>
-var socket = io('http://rexsync.herokuapp.com');
+var vid = document.getElementById("video");
+//var socket = io('http://rexsync.herokuapp.com');
+var socket = io('http://localhost:3000');
+var roomID = "";
+var userID = "";
 
-socket.on('connection', (socket) => {
-    console.log('a user connected');
+//Store our GET variables so we can search for the roomID if present
+var $_GET = {};
+if(document.location.toString().indexOf('?') !== -1) {
+    var query = document.location
+                   .toString()
+                   // get the query string
+                   .replace(/^.*?\?/, '')
+                   // and remove any existing hash string (thanks, @vrijdenker)
+                   .replace(/#.*$/, '')
+                   .split('&');
 
-    socket.on('disconnect', () => {
-        console.log('user disconnected');
-    });
+    for(var i=0, l=query.length; i<l; i++) {
+       var aux = decodeURIComponent(query[i]).split('=');
+       $_GET[aux[0]] = aux[1];
+    }
+}
+
+roomID = $_GET['roomID'];
+var wasServSeek = false;
+
+//------------------------------ RECEIVERS BELOW --------------------------------
+
+socket.on('userID', (uID) => {
+    el = document.getElementById('userID');
+    el.innerHTML = 'User ID: ' + uID;
+    userID = uID;
+
+    socket.emit('joinRoom', roomID, userID);
+    console.log("Requested to join room: " + roomID);
 });
 
 socket.on('time', (timeString) => {
     el = document.getElementById('server-time');
     el.innerHTML = 'Server time: ' + timeString;
 });
+
+socket.on('play', (timeString) => {
+    console.log("received play from server");
+    vid = document.getElementById('video');
+    vid.currentTime = timeString;
+    vid.play();
+});
+
+socket.on('pause', (timeString) => {
+    vid = document.getElementById('video');
+    vid.currentTime = timeString;
+    vid.pause();
+});
+
+socket.on('seek', (timeString) => {
+    vid = document.getElementById('video');
+    vid.currentTime = timeString;
+    wasServSeek = true;
+});
+
+socket.on('joinedRoom', (roomID) => {
+    this.roomID = roomID;
+    console.log("Joined room " + roomID);
+});
+
+//------------------------------ SENDERS BELOW --------------------------------
+
+vid.ontimeupdate = function() {
+    document.getElementById("currentTime").innerHTML = vid.currentTime;
+};
+
+vid.onpause = function() {
+    console.log("The video has been paused");
+    document.getElementById("state").innerHTML = "paused";
+
+    //Send it to the server:
+    socket.emit('pause', vid.currentTime, roomID);
+};
+
+vid.onplay = function() {
+    console.log("The video has started to play");
+    document.getElementById("state").innerHTML = "playing";
+
+    //Send it to the server:
+    socket.emit('play', vid.currentTime, roomID);
+};
+
+vid.onseeking = function() {
+    if (wasServSeek == true) {
+        wasServSeek = false;
+        return;
+    }
+    console.log("Seek operation began at " + vid.currentTime);
+    document.getElementById("state").innerHTML = "seeking";
+
+    socket.emit('seek', vid.currentTime, roomID);
+};
 </script>
