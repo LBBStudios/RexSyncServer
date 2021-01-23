@@ -1,4 +1,4 @@
-#RexSyncServer
+# RexSyncServer
 
 This repository hosts the express/socket.io server that syncs HTML5 videos between clients.
 Since our primary deployment target is Heroku, the Procfile needed for it is included and can easily be deployed onto your own Heroku instance.
